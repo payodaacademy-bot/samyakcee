@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { createClient } from '@/lib/supabase/client';
 import { Trophy, Medal, Star, TrendingUp, Zap, Target, Swords, ChevronUp, ChevronDown, Loader2, Crown, Flame, BookOpen, FlaskConical, Atom, Brain, RefreshCw } from 'lucide-react';
-import Icon from '@/components/ui/AppIcon';
+import Icon from './AppIcon';
 
 
 interface LeaderboardEntry {

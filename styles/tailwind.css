@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-foreground: #ffffff;
+    --secondary: #eef2ff;
+    --secondary-foreground: #4f46e5;
+    --accent: #19c6a3;
+    --accent-foreground: #ffffff;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #6366f1;
+    --radius: 12px;
+    --error: #ef4444;
+    --error-light: #fef2f2;
+    --success: #22c55e;
+    --success-light: #f0fdf4;
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+    --bio: #22c55e;
+    --bio-light: #f0fdf4;
+    --chem: #f59e0b;
+    --chem-light: #fffbeb;
+    --physics: #3b82f6;
+    --physics-light: #eff6ff;
+    --phy: #3b82f6;
+    --phy-light: #eff6ff;
+    --ma: #a855f7;
+    --ma-light: #faf5ff;
+  }
+
+  .dark {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --primary: #818cf8;
+    --primary-dark: #6366f1;
+    --primary-foreground: #ffffff;
+    --secondary: #1e1b4b;
+    --secondary-foreground: #a5b4fc;
+    --accent: #2dd4bf;
+    --accent-foreground: #0f172a;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --card: #1e293b;
+    --card-foreground: #f8fafc;
+    --border: #334155;
+    --input: #334155;
+    --ring: #818cf8;
+    --error: #f87171;
+    --error-light: #1c0a0a;
+    --success: #4ade80;
+    --success-light: #052e16;
+    --warning: #fbbf24;
+    --warning-light: #1c1200;
+    --bio: #4ade80;
+    --bio-light: #052e16;
+    --chem: #fbbf24;
+    --chem-light: #1c1200;
+    --physics: #60a5fa;
+    --physics-light: #0c1a2e;
+    --phy: #60a5fa;
+    --phy-light: #0c1a2e;
+    --ma: #c084fc;
+    --ma-light: #1a0a2e;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .card-base {
+    @apply bg-card border border-border rounded-2xl shadow-card;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:bg-primary-dark transition-colors;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground font-semibold text-sm rounded-xl hover:opacity-80 transition-colors;
+  }
+
+  .input-base {
+    @apply w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

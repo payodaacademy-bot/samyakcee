@@ -4,9 +4,9 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import '../styles/tailwind.css';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/contexts/AuthContext';
-import AnimatePresenceProvider from '@/components/AnimatePresenceProvider';
-import PWAInstallButton from '@/components/PWAInstallButton';
-import AnalyticsProvider from '@/components/AnalyticsProvider';
+import AnimatePresenceProvider from './src/components/AnimatePresenceProvider';
+import PWAInstallButton from './PWAInstallButton';
+import AnalyticsProvider from './src/components/AnalyticsProvider';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],

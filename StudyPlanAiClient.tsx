@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { Video, BookOpen, FlaskConical, Atom, Brain, Play, Pause, Volume2, VolumeX, Maximize2, SkipBack, SkipForward, CheckCircle2, ChevronDown, ChevronUp, Search, StickyNote, Save, X, PlayCircle, Lock, Star, TrendingUp, Filter } from 'lucide-react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ const SUBJECTS: Subject[] = [
     videos: [
     { id: 'v1', title: 'Introduction to Cell Structure', chapter: 'Cell Biology & Cell Division', subject: 'Biology', duration: 1820, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_1b5c5b9c8-1765751388234.png", thumbnailAlt: 'Microscopic view of cell structure showing nucleus and organelles', instructor: 'Dr. Anita Sharma', views: 3420, rating: 4.8, isWatched: true, watchedSeconds: 1820, isLocked: false, tags: ['Cell', 'Organelles', 'CEE 2024'], description: 'Deep dive into prokaryotic and eukaryotic cell structures with diagrams.' },
     { id: 'v2', title: 'Mitosis — Step by Step', chapter: 'Cell Biology & Cell Division', subject: 'Biology', duration: 2340, thumbnail: "https://images.unsplash.com/photo-1667731636716-e14ce123692f", thumbnailAlt: 'Cell division mitosis phases under microscope', instructor: 'Dr. Anita Sharma', views: 2890, rating: 4.9, isWatched: true, watchedSeconds: 1200, isLocked: false, tags: ['Mitosis', 'Division', 'CEE 2025'], description: 'All phases of mitosis explained with animations and MCQ patterns.' },
-    { id: 'v3', title: 'Meiosis & Genetic Variation', chapter: 'Cell Biology & Cell Division', subject: 'Biology', duration: 2760, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_10eb6b351-1784078705064.png", thumbnailAlt: 'Meiosis chromosomal crossover diagram', instructor: 'Dr. Anita Sharma', views: 2100, rating: 4.7, isWatched: false, watchedSeconds: 0, isLocked: false, tags: ['Meiosis', 'Genetics'], description: 'Meiosis I and II, crossing over, and genetic recombination.' }]
+    { id: 'v3', title: 'Meiosis & Genetic Variation', chapter: 'Cell Biology & Cell Division', subject: 'Biology', duration: 2760, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_1925a5c19-1784384817420.png", thumbnailAlt: 'Meiosis chromosomal crossover diagram', instructor: 'Dr. Anita Sharma', views: 2100, rating: 4.7, isWatched: false, watchedSeconds: 0, isLocked: false, tags: ['Meiosis', 'Genetics'], description: 'Meiosis I and II, crossing over, and genetic recombination.' }]
 
   },
   {
@@ -97,7 +97,7 @@ const SUBJECTS: Subject[] = [
     title: 'Atomic Structure',
     videos: [
     { id: 'v7', title: 'Bohr Model & Quantum Numbers', chapter: 'Atomic Structure', subject: 'Chemistry', duration: 2460, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_1617f71b8-1776611779754.png", thumbnailAlt: 'Atomic orbital model showing electron shells and quantum numbers', instructor: 'Dr. Bikash Poudel', views: 3200, rating: 4.7, isWatched: true, watchedSeconds: 2460, isLocked: false, tags: ['Bohr', 'Quantum', 'CEE 2025'], description: 'Bohr atomic model, quantum numbers, and electronic configuration.' },
-    { id: 'v8', title: 'Periodic Table Trends', chapter: 'Atomic Structure', subject: 'Chemistry', duration: 1980, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_10f75fd0f-1784078706421.png", thumbnailAlt: 'Periodic table of elements with color-coded groups', instructor: 'Dr. Bikash Poudel', views: 2750, rating: 4.8, isWatched: false, watchedSeconds: 600, isLocked: false, tags: ['Periodic Table', 'Trends'], description: 'Ionization energy, electronegativity, atomic radius trends.' }]
+    { id: 'v8', title: 'Periodic Table Trends', chapter: 'Atomic Structure', subject: 'Chemistry', duration: 1980, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_1ba270598-1784384817739.png", thumbnailAlt: 'Periodic table of elements with color-coded groups', instructor: 'Dr. Bikash Poudel', views: 2750, rating: 4.8, isWatched: false, watchedSeconds: 600, isLocked: false, tags: ['Periodic Table', 'Trends'], description: 'Ionization energy, electronegativity, atomic radius trends.' }]
 
   },
   {
@@ -129,7 +129,7 @@ const SUBJECTS: Subject[] = [
     id: 'phys-ch2',
     title: 'Waves & Optics',
     videos: [
-    { id: 'v12', title: 'Wave Properties & Types', chapter: 'Waves & Optics', subject: 'Physics', duration: 2160, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_10cbcdf62-1784078707467.png", thumbnailAlt: 'Wave interference pattern showing constructive and destructive interference', instructor: 'Prof. Suman KC', views: 2400, rating: 4.6, isWatched: false, watchedSeconds: 0, isLocked: true, tags: ['Waves', 'Optics'], description: 'Transverse and longitudinal waves, reflection, refraction, and diffraction.' }]
+    { id: 'v12', title: 'Wave Properties & Types', chapter: 'Waves & Optics', subject: 'Physics', duration: 2160, thumbnail: "https://img.rocket.new/generatedImages/rocket_gen_img_1858ba2db-1784384818469.png", thumbnailAlt: 'Wave interference pattern showing constructive and destructive interference', instructor: 'Prof. Suman KC', views: 2400, rating: 4.6, isWatched: false, watchedSeconds: 0, isLocked: true, tags: ['Waves', 'Optics'], description: 'Transverse and longitudinal waves, reflection, refraction, and diffraction.' }]
 
   }]
 

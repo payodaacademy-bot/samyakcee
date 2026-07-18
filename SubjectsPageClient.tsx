@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { Radio, Clock, Users, MessageSquare, Send, ThumbsUp, BookOpen, FlaskConical, Atom, Brain, CheckCircle2, PlayCircle, Calendar, Lock, Mic, MicOff, Video, VideoOff, Download, Search, Filter, Eye, ArrowLeft } from 'lucide-react';
 import { useRealtimeChat } from '@/lib/hooks/useRealtimeChat';
 import { useTypingIndicator } from '@/lib/hooks/useTypingIndicator';
@@ -358,7 +358,7 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
     roomId: cls.id,
     enabled: cls.status === 'live',
     userId: user?.id,
-    authorName,
+    authorName
   });
 
   // Typing indicator via Presence
@@ -366,7 +366,7 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
     roomId: cls.id,
     enabled: cls.status === 'live',
     userId: user?.id,
-    userName: authorName,
+    userName: authorName
   });
 
   // Merge realtime messages into local QA list (deduped by id)
@@ -374,18 +374,18 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
     if (realtimeMessages.length === 0) return;
     setMessages((prev) => {
       const existingIds = new Set(prev.map((m) => m.id));
-      const newMsgs = realtimeMessages
-        .filter((rm) => !existingIds.has(rm.id))
-        .map((rm) => ({
-          id: rm.id,
-          author: rm.author,
-          authorInitial: rm.authorInitial,
-          authorColor: rm.user_id === user?.id ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground',
-          text: rm.body,
-          timestamp: rm.timestamp,
-          likes: 0,
-          liked: false,
-        }));
+      const newMsgs = realtimeMessages.
+      filter((rm) => !existingIds.has(rm.id)).
+      map((rm) => ({
+        id: rm.id,
+        author: rm.author,
+        authorInitial: rm.authorInitial,
+        authorColor: rm.user_id === user?.id ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground',
+        text: rm.body,
+        timestamp: rm.timestamp,
+        likes: 0,
+        liked: false
+      }));
       return newMsgs.length > 0 ? [...prev, ...newMsgs] : prev;
     });
   }, [realtimeMessages, user?.id]);
@@ -411,7 +411,7 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
         text: inputText.trim(),
         timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
         likes: 0,
-        liked: false,
+        liked: false
       };
       setMessages((prev) => [...prev, newMsg]);
     }
@@ -420,9 +420,9 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
 
   const handleLike = (id: string) => {
     setMessages((prev) =>
-      prev.map((m) =>
-        m.id === id ? { ...m, liked: !m.liked, likes: m.liked ? m.likes - 1 : m.likes + 1 } : m
-      )
+    prev.map((m) =>
+    m.id === id ? { ...m, liked: !m.liked, likes: m.liked ? m.likes - 1 : m.likes + 1 } : m
+    )
     );
   };
 
@@ -441,18 +441,18 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
           <SubjectIcon size={11} className={cls.subjectColor} />
         </div>
         <p className="text-sm font-semibold text-foreground truncate flex-1">{cls.title}</p>
-        {cls.status === 'live' && (
-          <span className="text-xs font-bold px-2 py-1 rounded-full bg-error text-white animate-pulse flex items-center gap-1 shrink-0">
+        {cls.status === 'live' &&
+        <span className="text-xs font-bold px-2 py-1 rounded-full bg-error text-white animate-pulse flex items-center gap-1 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-white" />
             LIVE · {cls.viewers}
           </span>
-        )}
-        {cls.status === 'ended' && (
-          <span className="text-xs font-semibold px-2 py-1 rounded-full bg-muted text-muted-foreground shrink-0 flex items-center gap-1">
+        }
+        {cls.status === 'ended' &&
+        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-muted text-muted-foreground shrink-0 flex items-center gap-1">
             <PlayCircle size={11} />
             Recording
           </span>
-        )}
+        }
       </div>
 
       {/* Main layout */}
@@ -461,18 +461,18 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Video embed */}
           <div className="relative bg-black flex-shrink-0" style={{ aspectRatio: '16/9', maxHeight: '65vh' }}>
-            {cls.embedId ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${cls.embedId}?autoplay=${cls.status === 'live' ? 1 : 0}&rel=0&modestbranding=1`}
-                title={cls.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                {cls.status === 'live' ? (
-                  <>
+            {cls.embedId ?
+            <iframe
+              src={`https://www.youtube.com/embed/${cls.embedId}?autoplay=${cls.status === 'live' ? 1 : 0}&rel=0&modestbranding=1`}
+              title={cls.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full" /> :
+
+
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                {cls.status === 'live' ?
+              <>
                     <div className="w-16 h-16 rounded-full bg-error/20 flex items-center justify-center mb-4 animate-pulse">
                       <Radio size={32} className="text-error" />
                     </div>
@@ -482,54 +482,54 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
                       <span className="w-2 h-2 rounded-full bg-error animate-pulse" />
                       {cls.viewers} watching live
                     </div>
-                  </>
-                ) : cls.status === 'upcoming' ? (
-                  <>
+                  </> :
+              cls.status === 'upcoming' ?
+              <>
                     <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4">
                       <Calendar size={32} className="text-primary" />
                     </div>
                     <p className="text-white font-bold text-lg">Class Not Started Yet</p>
                     <p className="text-gray-400 text-sm mt-1">Scheduled for {cls.scheduledAt}</p>
-                  </>
-                ) : (
-                  <>
+                  </> :
+
+              <>
                     <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center mb-4">
                       <PlayCircle size={32} className="text-gray-400" />
                     </div>
                     <p className="text-white font-bold text-lg">Recording Available</p>
                     <p className="text-gray-400 text-sm mt-1">Click play to watch the recording</p>
                   </>
-                )}
+              }
               </div>
-            )}
+            }
 
             {/* Live overlay controls */}
-            {cls.status === 'live' && (
-              <div className="absolute bottom-3 left-3 flex items-center gap-2">
+            {cls.status === 'live' &&
+            <div className="absolute bottom-3 left-3 flex items-center gap-2">
                 <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className={`p-2 rounded-lg backdrop-blur-sm transition-colors ${isMuted ? 'bg-error/80 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
-                  title={isMuted ? 'Unmute' : 'Mute'}>
+                onClick={() => setIsMuted(!isMuted)}
+                className={`p-2 rounded-lg backdrop-blur-sm transition-colors ${isMuted ? 'bg-error/80 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
+                title={isMuted ? 'Unmute' : 'Mute'}>
                   {isMuted ? <MicOff size={16} /> : <Mic size={16} />}
                 </button>
                 <button
-                  onClick={() => setIsVideoOff(!isVideoOff)}
-                  className={`p-2 rounded-lg backdrop-blur-sm transition-colors ${isVideoOff ? 'bg-error/80 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
-                  title={isVideoOff ? 'Turn on camera' : 'Turn off camera'}>
+                onClick={() => setIsVideoOff(!isVideoOff)}
+                className={`p-2 rounded-lg backdrop-blur-sm transition-colors ${isVideoOff ? 'bg-error/80 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
+                title={isVideoOff ? 'Turn on camera' : 'Turn off camera'}>
                   {isVideoOff ? <VideoOff size={16} /> : <Video size={16} />}
                 </button>
               </div>
-            )}
+            }
 
             {/* Recording controls */}
-            {cls.status === 'ended' && (
-              <div className="absolute bottom-3 right-3">
+            {cls.status === 'ended' &&
+            <div className="absolute bottom-3 right-3">
                 <button className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-sm text-white text-xs font-semibold rounded-lg hover:bg-black/80 transition-colors">
                   <Download size={13} />
                   Download
                 </button>
               </div>
-            )}
+            }
           </div>
 
           {/* Class info below video */}
@@ -543,12 +543,12 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
                     <Clock size={11} />
                     {cls.scheduledAt} · {formatDuration(cls.duration)}
                   </span>
-                  {cls.status === 'live' && (
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  {cls.status === 'live' &&
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
                       <Users size={11} />
                       {cls.viewers} live
                     </span>
-                  )}
+                  }
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
@@ -571,13 +571,13 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
             <button
               onClick={() => setActiveTab('qa')}
               className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors ${
-                activeTab === 'qa' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'
-              }`}>
+              activeTab === 'qa' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`
+              }>
               <MessageSquare size={14} />
               {isRecording ? 'Class Chat' : 'Live Q&A'}
-              {cls.status === 'live' && isConnected && (
-                <span className="w-1.5 h-1.5 rounded-full bg-success shrink-0" title="Realtime connected" />
-              )}
+              {cls.status === 'live' && isConnected &&
+              <span className="w-1.5 h-1.5 rounded-full bg-success shrink-0" title="Realtime connected" />
+              }
               <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">
                 {messages.length}
               </span>
@@ -585,31 +585,31 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
             <button
               onClick={() => setActiveTab('topics')}
               className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors ${
-                activeTab === 'topics' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'
-              }`}>
+              activeTab === 'topics' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`
+              }>
               <BookOpen size={14} />
               Topics
             </button>
           </div>
 
           {/* Q&A messages */}
-          {activeTab === 'qa' && (
-            <>
+          {activeTab === 'qa' &&
+          <>
               <div className="flex-1 overflow-y-auto p-3 space-y-3">
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`rounded-xl p-3 ${
-                      msg.isPinned
-                        ? 'bg-primary/5 border border-primary/20'
-                        : msg.isInstructor
-                        ? 'bg-bio-light/40' :'bg-muted/50'
-                    }`}>
-                    {msg.isPinned && (
-                      <p className="text-xs text-primary font-semibold mb-1.5 flex items-center gap-1">
+                {messages.map((msg) =>
+              <div
+                key={msg.id}
+                className={`rounded-xl p-3 ${
+                msg.isPinned ?
+                'bg-primary/5 border border-primary/20' :
+                msg.isInstructor ?
+                'bg-bio-light/40' : 'bg-muted/50'}`
+                }>
+                    {msg.isPinned &&
+                <p className="text-xs text-primary font-semibold mb-1.5 flex items-center gap-1">
                         📌 Pinned message
                       </p>
-                    )}
+                }
                     <div className="flex items-start gap-2">
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${msg.authorColor}`}>
                         {msg.authorInitial}
@@ -619,32 +619,32 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
                           <span className={`text-xs font-bold ${msg.isInstructor ? 'text-bio' : 'text-foreground'}`}>
                             {msg.author}
                           </span>
-                          {msg.isInstructor && (
-                            <span className="text-xs bg-bio-light text-bio px-1.5 py-0.5 rounded-full font-semibold">
+                          {msg.isInstructor &&
+                      <span className="text-xs bg-bio-light text-bio px-1.5 py-0.5 rounded-full font-semibold">
                               Instructor
                             </span>
-                          )}
+                      }
                           <span className="text-xs text-muted-foreground ml-auto">{msg.timestamp}</span>
                         </div>
                         <p className="text-xs text-foreground leading-relaxed">{msg.text}</p>
                         <button
-                          onClick={() => handleLike(msg.id)}
-                          className={`flex items-center gap-1 mt-1.5 text-xs transition-colors ${
-                            msg.liked ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                          }`}>
+                      onClick={() => handleLike(msg.id)}
+                      className={`flex items-center gap-1 mt-1.5 text-xs transition-colors ${
+                      msg.liked ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`
+                      }>
                           <ThumbsUp size={11} className={msg.liked ? 'fill-primary' : ''} />
                           {msg.likes}
                         </button>
                       </div>
                     </div>
                   </div>
-                ))}
+              )}
                 <div ref={messagesEndRef} />
               </div>
 
               {/* Typing indicator */}
-              {typingLabel && cls.status === 'live' && (
-                <div className="px-3 py-1.5 border-t border-border">
+              {typingLabel && cls.status === 'live' &&
+            <div className="px-3 py-1.5 border-t border-border">
                   <p className="text-xs text-muted-foreground italic flex items-center gap-1.5">
                     <span className="flex gap-0.5">
                       <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -654,27 +654,27 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
                     {typingLabel}
                   </p>
                 </div>
-              )}
+            }
 
               {/* Input */}
-              {!isRecording && (
-                <div className="p-3 border-t border-border shrink-0">
+              {!isRecording &&
+            <div className="p-3 border-t border-border shrink-0">
                   <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2">
                     <input
-                      type="text"
-                      value={inputText}
-                      onChange={(e) => {
-                        setInputText(e.target.value);
-                        onTyping();
-                      }}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                      placeholder="Ask a question..."
-                      className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                    />
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => {
+                    setInputText(e.target.value);
+                    onTyping();
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Ask a question..."
+                  className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none" />
+                
                     <button
-                      onClick={handleSend}
-                      disabled={!inputText.trim()}
-                      className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white disabled:opacity-40 hover:bg-primary/90 transition-colors shrink-0">
+                  onClick={handleSend}
+                  disabled={!inputText.trim()}
+                  className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white disabled:opacity-40 hover:bg-primary/90 transition-colors shrink-0">
                       <Send size={13} />
                     </button>
                   </div>
@@ -682,32 +682,32 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
                     Press Enter to send · Be respectful
                   </p>
                 </div>
-              )}
+            }
 
-              {isRecording && (
-                <div className="p-3 border-t border-border shrink-0 text-center">
+              {isRecording &&
+            <div className="p-3 border-t border-border shrink-0 text-center">
                   <p className="text-xs text-muted-foreground">This is a recording — chat is read-only</p>
                 </div>
-              )}
+            }
             </>
-          )}
+          }
 
           {/* Topics tab */}
-          {activeTab === 'topics' && (
-            <div className="flex-1 overflow-y-auto p-4">
+          {activeTab === 'topics' &&
+          <div className="flex-1 overflow-y-auto p-4">
               <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wide">Topics Covered</p>
               <div className="space-y-2">
-                {cls.topics.map((topic, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+                {cls.topics.map((topic, i) =>
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                     <div className={`w-6 h-6 rounded-full ${cls.subjectBg} flex items-center justify-center shrink-0`}>
                       <span className={`text-xs font-bold ${cls.subjectColor}`}>{i + 1}</span>
                     </div>
                     <p className="text-sm text-foreground font-medium">{topic}</p>
-                    {cls.status === 'ended' && (
-                      <CheckCircle2 size={14} className="text-bio ml-auto shrink-0" />
-                    )}
+                    {cls.status === 'ended' &&
+                <CheckCircle2 size={14} className="text-bio ml-auto shrink-0" />
+                }
                   </div>
-                ))}
+              )}
               </div>
 
               <div className="mt-4 p-3 rounded-xl bg-muted/50">
@@ -728,11 +728,11 @@ function LiveClassRoom({ cls, onBack }: LiveClassRoomProps) {
                 </div>
               </div>
             </div>
-          )}
+          }
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────

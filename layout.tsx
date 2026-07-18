@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Zap, ToggleLeft, ToggleRight, Loader2, AlertCircle, CheckCircle2, Lock, Unlock, Upload, Download, Search, Sparkles, Lightbulb, RefreshCw } from 'lucide-react';
-import { getChatCompletion } from '@/lib/ai/chatCompletion';
+import { getChatCompletion } from './src/lib/ai/chatCompletion';
 
 interface Subject { id: string; name: string; display_name: string; }
 interface Chapter { id: string; subject_id: string; title: string; }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { LayoutDashboard, Users, BookOpen, Video, FileText, Zap, Swords, CreditCard, BarChart2, TrendingUp, TrendingDown, ChevronRight, Activity, Shield, MessageSquare, Radio, LogOut, Menu, Sun, Moon, KeyRound, Upload } from 'lucide-react';
-import AppLogo from '@/components/ui/AppLogo';
+import AppLogo from './src/components/ui/AppLogo';
 import { createClient } from '@/lib/supabase/client';
 
 interface StatCard {

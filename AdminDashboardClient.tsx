@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import ActivatePlanClient from './components/ActivatePlanClient';
+import ActivatePlanClient from './ActivatePlanClient';
 
 export const metadata: Metadata = {
   title: 'Activate Plan — Samyak CEE Mastery',

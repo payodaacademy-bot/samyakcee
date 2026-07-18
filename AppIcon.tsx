@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useChat } from '@/lib/hooks/useChat';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { Zap, RefreshCw, CheckCircle, XCircle, ChevronRight, Loader2, BookOpen, FlaskConical, Atom, Brain, ListChecks } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Icon from '@/components/ui/AppIcon';
+import Icon from './AppIcon';
 
 
 interface MCQOption {

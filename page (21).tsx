@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@/lib/hooks/useChat';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { Bot, Send, User, Sparkles, BookOpen, Atom, FlaskConical, Brain, RotateCcw } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Icon from '@/components/ui/AppIcon';
+import Icon from './AppIcon';
 
 
 interface Message {

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
-import LeaderboardClient from './components/LeaderboardClient';
+import LeaderboardClient from './LeaderboardClient';
 
 export const metadata: Metadata = {
   title: 'Leaderboard — Samyak CEE Mastery',

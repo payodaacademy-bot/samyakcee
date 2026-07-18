@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import LiveClassesClient from './components/LiveClassesClient';
+import LiveClassesClient from './LiveClassesClient';
 
 export const metadata: Metadata = {
   title: 'Live Classes — Samyak CEE Mastery',
