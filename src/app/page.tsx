@@ -1,4 +1,4 @@
-import HomepageClient from '../../RegisterForm';
+import HomepageClient from '@/components/HomepageClient';
 
 export default function HomePage() {
   return <HomepageClient />;
