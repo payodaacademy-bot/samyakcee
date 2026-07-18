@@ -9,8 +9,8 @@ interface AppLogoProps {
 const AppLogo = ({ size = 32, className = '' }: AppLogoProps) => {
   return (
     <div
-      className={`rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden ${className}`}
-      style={{ width: size, height: size }}
+      className={`rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden shrink-0 ${className}`}
+      style={{ width: size, height: size, minWidth: size, minHeight: size }}
     >
       <Image
         src="/assets/images/app_logo.png"
@@ -18,7 +18,8 @@ const AppLogo = ({ size = 32, className = '' }: AppLogoProps) => {
         width={size}
         height={size}
         className="object-contain"
-        onError={() => {}}
+        priority
+        unoptimized
       />
     </div>
   );

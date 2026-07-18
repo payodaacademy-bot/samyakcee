@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Users, BookOpen, Video, FileText, Zap, Swords, CreditCard, BarChart2, TrendingUp, ChevronRight, Activity, Shield, MessageSquare, Radio, LogOut, Menu, Sun, Moon, KeyRound, Upload } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, FileText, Zap, CreditCard, BarChart2, ChevronRight, Activity, Shield, MessageSquare, Radio, LogOut, Menu, Sun, Moon, KeyRound, Upload } from 'lucide-react';
 import AppLogo from '@/components/ui/AppLogo';
 import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface StatCard {
   label: string;
@@ -16,42 +18,17 @@ interface StatCard {
   bg: string;
 }
 
-const stats: StatCard[] = [
-  { label: 'Total Students', value: '12,847', change: '+234 this week', trend: 'up', icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
-  { label: 'Active Today', value: '3,421', change: '+12% vs yesterday', trend: 'up', icon: Activity, color: 'text-success', bg: 'bg-success-light' },
-  { label: 'Pro Subscribers', value: '2,108', change: '+89 this month', trend: 'up', icon: CreditCard, color: 'text-chem', bg: 'bg-chem-light' },
-  { label: 'Revenue (NPR)', value: '8,42,500', change: '+18% vs last month', trend: 'up', icon: TrendingUp, color: 'text-bio', bg: 'bg-bio-light' },
-  { label: 'Active Battles', value: '147', change: 'Right now', trend: 'neutral', icon: Swords, color: 'text-ma', bg: 'bg-ma-light' },
-  { label: 'MCQs Published', value: '14,280', change: '+120 this week', trend: 'up', icon: Zap, color: 'text-physics', bg: 'bg-physics-light' },
-  { label: 'Support Tickets', value: '23', change: '5 unresolved', trend: 'down', icon: MessageSquare, color: 'text-error', bg: 'bg-error-light' },
-  { label: 'Upcoming Classes', value: '8', change: 'Next 7 days', trend: 'neutral', icon: Radio, color: 'text-primary', bg: 'bg-primary/10' },
-];
-
 const navItems = [
   { label: 'Overview', href: '/admin', icon: LayoutDashboard, key: 'admin-overview' },
   { label: 'Content', key: 'admin-content', icon: BookOpen, children: [
-    { label: 'Subjects & Chapters', href: '/admin/subjects', icon: BookOpen, key: 'admin-subjects' },
+    { label: 'Subjects', href: '/admin/subjects', icon: BookOpen, key: 'admin-subjects' },
     { label: 'Chapters', href: '/admin/chapters', icon: BookOpen, key: 'admin-chapters' },
   ]},
   { label: 'Upload Manager', href: '/admin/uploads', icon: Upload, key: 'admin-uploads' },
-  { label: 'Questions', href: '/admin/questions', icon: Zap, key: 'admin-questions', badge: '14,280' },
+  { label: 'Questions', href: '/admin/questions', icon: Zap, key: 'admin-questions' },
   { label: 'Exams', href: '/admin/exams', icon: FileText, key: 'admin-exams' },
-  { label: 'AI Tools', key: 'admin-ai', icon: Zap, children: [
-    { label: 'Content Quality Review', href: '/admin/ai-review', icon: Shield, key: 'admin-ai-review' },
-    { label: 'MCQ Generator', href: '/mcq-generator', icon: Zap, key: 'admin-mcq-gen' },
-  ]},
   { label: 'Analytics', href: '/admin/analytics', icon: BarChart2, key: 'admin-analytics' },
   { label: 'Activation Codes', href: '/admin/activation-codes', icon: KeyRound, key: 'admin-activation-codes' },
-];
-
-const recentActivity = [
-  { id: 'act-1', type: 'user', text: 'New registration: Sita Rai (Kathmandu)', time: '2m ago', icon: Users, color: 'text-primary' },
-  { id: 'act-2', type: 'payment', text: 'Pro subscription purchased — NPR 2,499', time: '5m ago', icon: CreditCard, color: 'text-success' },
-  { id: 'act-3', type: 'content', text: 'New notes published: Cell Biology Ch.3', time: '12m ago', icon: FileText, color: 'text-bio' },
-  { id: 'act-4', type: 'battle', text: 'Battle completed: Priya vs Aarav (Biology)', time: '18m ago', icon: Swords, color: 'text-chem' },
-  { id: 'act-5', type: 'support', text: 'Support ticket #247 opened — Payment issue', time: '25m ago', icon: MessageSquare, color: 'text-error' },
-  { id: 'act-6', type: 'content', text: 'Video uploaded: Genetics Lecture #5', time: '1h ago', icon: Video, color: 'text-physics' },
-  { id: 'act-7', type: 'user', text: 'Teacher account created: Dr. Ramesh Poudel', time: '2h ago', icon: Shield, color: 'text-ma' },
 ];
 
 const quickActions = [
@@ -63,36 +40,65 @@ const quickActions = [
   { label: 'Activation Codes', href: '/admin/activation-codes', icon: KeyRound, color: 'text-ma', bg: 'bg-ma-light' },
 ];
 
-interface KpiData {
+interface DashboardData {
   totalQuestions: number;
   totalExams: number;
   totalStudents: number;
+  totalSubjects: number;
+  totalChapters: number;
+  proSubscribers: number;
+  recentUsers: { id: string; full_name: string | null; created_at: string }[];
   loading: boolean;
 }
 
 export default function AdminDashboardClient() {
+  const router = useRouter();
+  const { signOut, profile } = useAuth();
   const [isDark, setIsDark] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['admin-content']));
-  const [kpi, setKpi] = useState<KpiData>({ totalQuestions: 0, totalExams: 0, totalStudents: 0, loading: true });
+  const [data, setData] = useState<DashboardData>({
+    totalQuestions: 0, totalExams: 0, totalStudents: 0,
+    totalSubjects: 0, totalChapters: 0, proSubscribers: 0,
+    recentUsers: [], loading: true,
+  });
 
   useEffect(() => {
-    const fetchKpi = async () => {
+    const fetchDashboard = async () => {
       const supabase = createClient();
-      const [questionsRes, examsRes, studentsRes] = await Promise.all([
+      const [questionsRes, examsRes, studentsRes, subjectsRes, chaptersRes, proRes, recentUsersRes] = await Promise.all([
         supabase.from('questions').select('id', { count: 'exact', head: true }),
         supabase.from('exams').select('id', { count: 'exact', head: true }),
         supabase.from('user_profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('subjects').select('id', { count: 'exact', head: true }).eq('is_active', true),
+        supabase.from('chapters').select('id', { count: 'exact', head: true }).eq('is_active', true),
+        supabase.from('user_profiles').select('id', { count: 'exact', head: true }).eq('subscription_plan', 'pro'),
+        supabase.from('user_profiles').select('id, full_name, created_at').order('created_at', { ascending: false }).limit(5),
       ]);
-      setKpi({
+      setData({
         totalQuestions: questionsRes.count ?? 0,
         totalExams: examsRes.count ?? 0,
         totalStudents: studentsRes.count ?? 0,
+        totalSubjects: subjectsRes.count ?? 0,
+        totalChapters: chaptersRes.count ?? 0,
+        proSubscribers: proRes.count ?? 0,
+        recentUsers: recentUsersRes.data ?? [],
         loading: false,
       });
     };
-    fetchKpi();
+    fetchDashboard();
   }, []);
+
+  const stats: StatCard[] = [
+    { label: 'Total Students', value: data.loading ? '…' : data.totalStudents.toLocaleString(), change: 'Registered users', trend: 'up', icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Pro Subscribers', value: data.loading ? '…' : data.proSubscribers.toLocaleString(), change: 'Active pro plans', trend: 'up', icon: CreditCard, color: 'text-chem', bg: 'bg-chem-light' },
+    { label: 'Active Subjects', value: data.loading ? '…' : data.totalSubjects.toLocaleString(), change: 'CEE subjects', trend: 'neutral', icon: BookOpen, color: 'text-bio', bg: 'bg-bio-light' },
+    { label: 'Total Chapters', value: data.loading ? '…' : data.totalChapters.toLocaleString(), change: 'Syllabus chapters', trend: 'up', icon: Activity, color: 'text-success', bg: 'bg-success-light' },
+    { label: 'MCQs Published', value: data.loading ? '…' : data.totalQuestions.toLocaleString(), change: 'Question bank', trend: 'up', icon: Zap, color: 'text-physics', bg: 'bg-physics-light' },
+    { label: 'Mock Exams', value: data.loading ? '…' : data.totalExams.toLocaleString(), change: 'Available tests', trend: 'up', icon: FileText, color: 'text-ma', bg: 'bg-ma-light' },
+    { label: 'Upcoming Classes', value: '—', change: 'Next 7 days', trend: 'neutral', icon: Radio, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Support Tickets', value: '—', change: 'Open tickets', trend: 'neutral', icon: MessageSquare, color: 'text-error', bg: 'bg-error-light' },
+  ];
 
   const toggleGroup = (key: string) => {
     setExpandedGroups((prev) => {
@@ -106,6 +112,11 @@ export default function AdminDashboardClient() {
     if (isDark) document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
   }, [isDark]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.replace('/login');
+  };
 
   const Sidebar = () => (
     <aside className="flex flex-col w-60 bg-card border-r border-border h-full">
@@ -158,9 +169,6 @@ export default function AdminDashboardClient() {
             >
               <item.icon size={17} className="shrink-0" />
               <span className="text-sm flex-1">{item.label}</span>
-              {(item as { badge?: string }).badge && (
-                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{(item as { badge?: string }).badge}</span>
-              )}
             </Link>
           );
         })}
@@ -168,13 +176,18 @@ export default function AdminDashboardClient() {
 
       <div className="border-t border-border p-2 shrink-0">
         <div className="flex items-center gap-2.5 px-2.5 py-2 mb-1">
-          <div className="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center text-error font-bold text-sm">A</div>
+          <div className="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center text-error font-bold text-sm">
+            {profile?.full_name?.[0]?.toUpperCase() ?? 'A'}
+          </div>
           <div>
-            <p className="text-xs font-semibold text-foreground">Admin User</p>
+            <p className="text-xs font-semibold text-foreground">{profile?.full_name ?? 'Admin User'}</p>
             <p className="text-xs text-muted-foreground">Super Admin</p>
           </div>
         </div>
-        <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-error hover:bg-error-light transition-colors">
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-error hover:bg-error-light transition-colors"
+        >
           <LogOut size={16} />
           <span className="text-sm font-medium">Sign Out</span>
         </button>
@@ -184,12 +197,10 @@ export default function AdminDashboardClient() {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      {/* Desktop sidebar */}
       <div className="hidden lg:flex shrink-0">
         <Sidebar />
       </div>
 
-      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
@@ -199,9 +210,7 @@ export default function AdminDashboardClient() {
         </div>
       )}
 
-      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Topbar */}
         <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 sm:px-6 shrink-0">
           <div className="flex items-center gap-3">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted">
@@ -223,14 +232,12 @@ export default function AdminDashboardClient() {
           </div>
         </header>
 
-        {/* Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="max-w-screen-2xl mx-auto">
-            {/* Page header */}
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-xl font-bold text-foreground">Platform Overview</h1>
-                <p className="text-sm text-muted-foreground mt-0.5">Samyak CEE Mastery · Real-time data</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Samyak CEE Mastery · Live data from Supabase</p>
               </div>
               <div className="flex gap-2">
                 {quickActions.slice(0, 3).map((a) => (
@@ -254,7 +261,7 @@ export default function AdminDashboardClient() {
                     </div>
                   </div>
                   <p className="text-2xl font-extrabold text-foreground">
-                    {kpi.loading ? <span className="animate-pulse">…</span> : kpi.totalQuestions.toLocaleString()}
+                    {data.loading ? <span className="animate-pulse">…</span> : data.totalQuestions.toLocaleString()}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">Published MCQs</p>
                 </div>
@@ -266,7 +273,7 @@ export default function AdminDashboardClient() {
                     </div>
                   </div>
                   <p className="text-2xl font-extrabold text-foreground">
-                    {kpi.loading ? <span className="animate-pulse">…</span> : kpi.totalExams.toLocaleString()}
+                    {data.loading ? <span className="animate-pulse">…</span> : data.totalExams.toLocaleString()}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">Mock tests created</p>
                 </div>
@@ -278,7 +285,7 @@ export default function AdminDashboardClient() {
                     </div>
                   </div>
                   <p className="text-2xl font-extrabold text-foreground">
-                    {kpi.loading ? <span className="animate-pulse">…</span> : kpi.totalStudents.toLocaleString()}
+                    {data.loading ? <span className="animate-pulse">…</span> : data.totalStudents.toLocaleString()}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">Registered users</p>
                 </div>
@@ -304,9 +311,8 @@ export default function AdminDashboardClient() {
               </div>
             </div>
 
-            {/* Quick Actions + Recent Activity */}
+            {/* Quick Actions + Recent Registrations */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Quick Actions */}
               <div className="bg-card border border-border rounded-2xl p-5">
                 <h2 className="text-sm font-bold text-foreground mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -321,22 +327,42 @@ export default function AdminDashboardClient() {
                 </div>
               </div>
 
-              {/* Recent Activity */}
+              {/* Recent Registrations (real data) */}
               <div className="bg-card border border-border rounded-2xl p-5">
-                <h2 className="text-sm font-bold text-foreground mb-4">Recent Activity</h2>
-                <div className="space-y-3">
-                  {recentActivity.map((act) => (
-                    <div key={act.id} className="flex items-start gap-3">
-                      <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center shrink-0 mt-0.5">
-                        <act.icon size={13} className={act.color} />
+                <h2 className="text-sm font-bold text-foreground mb-4">Recent Registrations</h2>
+                {data.loading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="flex items-center gap-3 animate-pulse">
+                        <div className="w-7 h-7 rounded-lg bg-muted shrink-0" />
+                        <div className="flex-1">
+                          <div className="h-3 bg-muted rounded w-2/3 mb-1" />
+                          <div className="h-2.5 bg-muted rounded w-1/3" />
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-foreground leading-snug">{act.text}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{act.time}</p>
+                    ))}
+                  </div>
+                ) : data.recentUsers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-6">No registrations yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {data.recentUsers.map((u) => (
+                      <div key={u.id} className="flex items-start gap-3">
+                        <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <Users size={13} className="text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-foreground leading-snug font-medium">
+                            {u.full_name ?? 'New Student'}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {new Date(u.created_at).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
