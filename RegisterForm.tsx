@@ -5,6 +5,7 @@ import PublicNav from './src/components/PublicNav';
 import HeroSection from './HeroSection';
 import StatsSection from './StatsSection';
 import SubjectsSection from './SubjectsSection';
+import ChaptersSection from './ChaptersSection';
 import MCQPreviewSection from './MCQPreviewSection';
 import BattleArenaSection from './BattleArenaSection';
 import PricingSection from './PricingSection';
@@ -33,6 +34,7 @@ export default function HomepageClient() {
         <HeroSection />
         <StatsSection />
         <SubjectsSection />
+        <ChaptersSection />
         <MCQPreviewSection />
         <BattleArenaSection />
         <PricingSection />
