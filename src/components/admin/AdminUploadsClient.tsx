@@ -1,5 +1,3 @@
-'use client';
-
-// This file intentionally left as a placeholder barrel.
-// AdminUploadsClient is imported directly from the root in uploads/page.tsx
-export {};
+// This file re-exports AdminUploadsClient from the root component file.
+// The actual implementation lives at /AdminUploadsClient.tsx
+export { default } from '../../../AdminUploadsClient';

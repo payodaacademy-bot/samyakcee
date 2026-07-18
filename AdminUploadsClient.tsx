@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Upload, FileText, Video, Image, BookOpen, Radio, Trash2, Eye, Plus, X, Save, Loader2, AlertCircle, CheckCircle2, Download, Search, File, Zap, ExternalLink, RefreshCw, FolderOpen, Lock } from 'lucide-react';
+import DownloadPopup, { DownloadItem } from '@/components/DownloadPopup';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -134,6 +135,7 @@ export default function AdminUploadsClient() {
   const [materials, setMaterials] = useState<StudyMaterial[]>([]);
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>([]);
   const [loading, setLoading] = useState(false);
+  const [downloadItem, setDownloadItem] = useState<DownloadItem | null>(null);
 
   useEffect(() => { loadSubjects(); loadChapters(); }, []);
   useEffect(() => {
@@ -219,21 +221,23 @@ export default function AdminUploadsClient() {
       </div>
 
       <div className="p-4">
-        {activeTab === 'notes' && <NotesTab subjects={subjects} chapters={chapters} notes={notes} loading={loading} supabase={supabase} onSuccess={showSuccess} onError={showError} onRefresh={loadNotes} />}
+        {activeTab === 'notes' && <NotesTab subjects={subjects} chapters={chapters} notes={notes} loading={loading} supabase={supabase} onSuccess={showSuccess} onError={showError} onRefresh={loadNotes} onDownload={setDownloadItem} />}
         {activeTab === 'videos' && <VideosTab subjects={subjects} chapters={chapters} videos={videos} loading={loading} supabase={supabase} onSuccess={showSuccess} onError={showError} onRefresh={loadVideos} />}
-        {activeTab === 'materials' && <MaterialsTab subjects={subjects} chapters={chapters} materials={materials} loading={loading} supabase={supabase} onSuccess={showSuccess} onError={showError} onRefresh={loadMaterials} />}
+        {activeTab === 'materials' && <MaterialsTab subjects={subjects} chapters={chapters} materials={materials} loading={loading} supabase={supabase} onSuccess={showSuccess} onError={showError} onRefresh={loadMaterials} onDownload={setDownloadItem} />}
         {activeTab === 'live' && <LiveClassesTab subjects={subjects} liveClasses={liveClasses} loading={loading} supabase={supabase} onSuccess={showSuccess} onError={showError} onRefresh={loadLiveClasses} />}
         {activeTab === 'bulk' && <BulkImportTab subjects={subjects} chapters={chapters} supabase={supabase} onSuccess={showSuccess} onError={showError} />}
       </div>
+
+      <DownloadPopup item={downloadItem} onClose={() => setDownloadItem(null)} />
     </div>
   );
 }
 
 // ─── Notes Tab ────────────────────────────────────────────────────────────────
 
-interface NotesTabProps { subjects: Subject[]; chapters: Chapter[]; notes: Note[]; loading: boolean; supabase: ReturnType<typeof createClient>; onSuccess: (m: string) => void; onError: (m: string) => void; onRefresh: () => void; }
+interface NotesTabProps { subjects: Subject[]; chapters: Chapter[]; notes: Note[]; loading: boolean; supabase: ReturnType<typeof createClient>; onSuccess: (m: string) => void; onError: (m: string) => void; onRefresh: () => void; onDownload: (item: DownloadItem) => void; }
 
-function NotesTab({ subjects, chapters, notes, loading, supabase, onSuccess, onError, onRefresh }: NotesTabProps) {
+function NotesTab({ subjects, chapters, notes, loading, supabase, onSuccess, onError, onRefresh, onDownload }: NotesTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -375,10 +379,11 @@ function NotesTab({ subjects, chapters, notes, loading, supabase, onSuccess, onE
                 <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                   {note.subjects && <span className="text-xs text-muted-foreground">{note.subjects.display_name}</span>}
                   {note.chapters && <span className="text-xs text-muted-foreground">· {note.chapters.title}</span>}
-                  {note.pdf_url && <a href={note.pdf_url} target="_blank" rel="noreferrer" className="text-xs text-primary flex items-center gap-0.5 hover:underline"><Download size={10} /> PDF</a>}
+                  {note.pdf_url && <button onClick={() => onDownload({ id: note.id, title: note.title, fileUrl: note.pdf_url!, fileType: 'application/pdf', subject: note.subjects?.display_name, chapter: note.chapters?.title, isPremium: note.is_premium })} className="text-xs text-primary flex items-center gap-0.5 hover:underline"><Download size={10} /> PDF</button>}
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">
+                {note.pdf_url && <button onClick={() => onDownload({ id: note.id, title: note.title, fileUrl: note.pdf_url!, fileType: 'application/pdf', subject: note.subjects?.display_name, chapter: note.chapters?.title, isPremium: note.is_premium })} className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title="Download PDF"><Download size={14} /></button>}
                 <button onClick={() => startEdit(note)} className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"><Eye size={14} /></button>
                 {deleteId === note.id ? (
                   <div className="flex items-center gap-1">
@@ -590,12 +595,12 @@ function VideosTab({ subjects, chapters, videos, loading, supabase, onSuccess, o
 
 // ─── Study Materials Tab ──────────────────────────────────────────────────────
 
-interface MaterialsTabProps { subjects: Subject[]; chapters: Chapter[]; materials: StudyMaterial[]; loading: boolean; supabase: ReturnType<typeof createClient>; onSuccess: (m: string) => void; onError: (m: string) => void; onRefresh: () => void; }
+interface MaterialsTabProps { subjects: Subject[]; chapters: Chapter[]; materials: StudyMaterial[]; loading: boolean; supabase: ReturnType<typeof createClient>; onSuccess: (m: string) => void; onError: (m: string) => void; onRefresh: () => void; onDownload: (item: DownloadItem) => void; }
 
 const MATERIAL_TYPES = ['general','formula_sheet','past_paper','reference','diagram','other'];
 const typeLabel: Record<string, string> = { general: 'General', formula_sheet: 'Formula Sheet', past_paper: 'Past Paper', reference: 'Reference', diagram: 'Diagram', other: 'Other' };
 
-function MaterialsTab({ subjects, chapters, materials, loading, supabase, onSuccess, onError, onRefresh }: MaterialsTabProps) {
+function MaterialsTab({ subjects, chapters, materials, loading, supabase, onSuccess, onError, onRefresh, onDownload }: MaterialsTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -756,10 +761,11 @@ function MaterialsTab({ subjects, chapters, materials, loading, supabase, onSucc
                 <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                   {m.subjects && <span className="text-xs text-muted-foreground">{m.subjects.display_name}</span>}
                   {m.file_size > 0 && <span className="text-xs text-muted-foreground">· {formatBytes(m.file_size)}</span>}
-                  <a href={m.file_url} target="_blank" rel="noreferrer" className="text-xs text-primary flex items-center gap-0.5 hover:underline"><Download size={10} /> Download</a>
+                  <button onClick={() => onDownload({ id: m.id, title: m.title, description: m.description, fileUrl: m.file_url, fileType: m.file_type, fileSize: m.file_size, subject: m.subjects?.display_name, chapter: m.chapters?.title, materialType: m.material_type, isPremium: m.is_premium })} className="text-xs text-primary flex items-center gap-0.5 hover:underline"><Download size={10} /> Download</button>
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">
+                <button onClick={() => onDownload({ id: m.id, title: m.title, description: m.description, fileUrl: m.file_url, fileType: m.file_type, fileSize: m.file_size, subject: m.subjects?.display_name, chapter: m.chapters?.title, materialType: m.material_type, isPremium: m.is_premium })} className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title="Download"><Download size={14} /></button>
                 <button onClick={() => startEdit(m)} className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"><Eye size={14} /></button>
                 {deleteId === m.id ? (
                   <div className="flex items-center gap-1">
