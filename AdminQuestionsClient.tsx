@@ -6,7 +6,7 @@ import {
   KeyRound, Plus, Copy, Check, Trash2, Loader2, AlertCircle,
   ArrowLeft, RefreshCw, CheckCircle2, Clock, XCircle
 } from 'lucide-react';
-import { createClient } from './src/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 interface ActivationCode {
   id: string;
