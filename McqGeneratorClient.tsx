@@ -1,4 +1,4 @@
-import AdminUploadsClient from './components/AdminUploadsClient';
+import AdminUploadsClient from './AdminUploadsClient';
 
 export default function AdminUploadsPage() {
   return <AdminUploadsClient />;

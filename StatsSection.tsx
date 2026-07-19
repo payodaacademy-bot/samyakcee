@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import AdminDashboardClient from './components/AdminDashboardClient';
+import AdminDashboardClient from './AdminDashboardClient';
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Swords, Zap, Trophy, Shield, Users, Clock, Star, Crown, ChevronRight, X, CheckCircle2, Loader2, Radio, Target, TrendingUp, Award, Flame, RotateCcw, Play } from 'lucide-react';

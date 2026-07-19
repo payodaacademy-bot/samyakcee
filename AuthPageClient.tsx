@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import { Swords, Zap, Trophy, Clock, Users, Shield, Play, RotateCcw, CheckCircle2, XCircle, Target, Hash, MessageSquare, Send } from 'lucide-react';
-import { useRealtimeChat } from '@/lib/hooks/useRealtimeChat';
-import { useTypingIndicator } from '@/lib/hooks/useTypingIndicator';
-import { useAuth } from '@/contexts/AuthContext';
+import { useRealtimeChat } from './src/lib/hooks/useRealtimeChat';
+import { useTypingIndicator } from './src/lib/hooks/useTypingIndicator';
+import { useAuth } from './src/contexts/AuthContext';
 
 type BattleMode = 'lobby' | 'matchmaking' | 'room-setup' | 'waiting' | 'active' | 'result';
 

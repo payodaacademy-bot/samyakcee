@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import PublicNav from '@/components/PublicNav';
+import PublicNav from './src/components/PublicNav';
 import HeroSection from './HeroSection';
 import StatsSection from './StatsSection';
 import SubjectsSection from './SubjectsSection';
+import ChaptersSection from './ChaptersSection';
 import MCQPreviewSection from './MCQPreviewSection';
 import BattleArenaSection from './BattleArenaSection';
 import PricingSection from './PricingSection';
@@ -12,7 +13,7 @@ import TestimonialsSection from './TestimonialsSection';
 import FAQSection from './FAQSection';
 import HomepageFooter from './HomepageFooter';
 import AnnouncementBar from './AnnouncementBar';
-import PageTransitionWrapper from '@/components/PageTransitionWrapper';
+import PageTransitionWrapper from './src/components/PageTransitionWrapper';
 
 export default function HomepageClient() {
   const [isDark, setIsDark] = useState(false);
@@ -33,6 +34,7 @@ export default function HomepageClient() {
         <HeroSection />
         <StatsSection />
         <SubjectsSection />
+        <ChaptersSection />
         <MCQPreviewSection />
         <BattleArenaSection />
         <PricingSection />
